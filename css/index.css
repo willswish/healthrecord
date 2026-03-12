@@ -1,0 +1,200 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI, sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:
+linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+url("https://images.unsplash.com/photo-1586773860418-d37222d8fce3");
+
+background-size:cover;
+background-position:center;
+}
+
+/* Glass Card */
+
+.card{
+width:350px;
+padding:40px;
+
+border-radius:20px;
+
+background:rgba(255,255,255,0.15);
+
+backdrop-filter:blur(15px);
+
+border:1px solid rgba(255,255,255,0.6);
+
+color:white;
+}
+
+/* Title */
+
+.card h1{
+text-align:center;
+margin-bottom:30px;
+font-size:28px;
+font-weight:bold;
+}
+
+/* Inputs */
+
+.input-group{
+margin-bottom:20px;
+}
+
+.input-group label{
+display:block;
+margin-bottom:8px;
+font-size:14px;
+}
+
+.input-group input{
+
+width:100%;
+
+background:transparent;
+
+border:none;
+
+border-bottom:1px solid white;
+
+padding:8px 0;
+
+color:white;
+
+font-size:14px;
+
+outline:none;
+}
+
+/* Options */
+
+.options{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+font-size:13px;
+
+margin-bottom:25px;
+
+}
+
+.options label{
+
+display:flex;
+
+align-items:center;
+
+gap:5px;
+
+cursor:pointer;
+
+}
+
+.options input{
+
+accent-color:white;
+
+}
+
+/* Button */
+
+button{
+
+width:100%;
+
+padding:12px;
+
+border:none;
+
+border-radius:10px;
+
+background:white;
+
+color:#333;
+
+font-weight:bold;
+
+font-size:15px;
+
+cursor:pointer;
+
+transition:0.3s;
+
+}
+
+button:hover{
+
+background:#e6e6e6;
+
+}
+
+/* Footer */
+
+.footer{
+
+text-align:center;
+
+margin-top:20px;
+
+font-size:13px;
+
+}
+
+.footer a{
+
+color:white;
+
+text-decoration:none;
+
+font-weight:500;
+
+}
+
+.footer a:hover{
+
+text-decoration:underline;
+
+}
+/* Role Dropdown */
+
+.role-select{
+
+width:100%;
+
+background:transparent;
+
+border:none;
+
+border-bottom:1px solid white;
+
+padding:8px 0;
+
+color:white;
+
+font-size:14px;
+
+outline:none;
+
+appearance:none;
+
+}
+
+.role-select option{
+
+color:black;
+
+}
