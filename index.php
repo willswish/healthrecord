@@ -15,7 +15,7 @@
 
 <div class="card">
 
-<h1>Student Health Medical Record</h1>
+<h1>Student Health Medical Records</h1>
 
 <div class="input-group">
 <label>Username</label>
