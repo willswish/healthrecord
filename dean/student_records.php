@@ -1,3 +1,42 @@
+<?php
+$servername = "localhost";
+$db_username = "root";
+$db_password = "";
+$dbname = "mhr";
+
+$conn = new mysqli($servername, $db_username, $db_password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$search = $_GET['search'] ?? '';
+
+$sql = "SELECT first_name, last_name, age, email, contact, course, college, blood_type, sex, religion, civil_status, allergies FROM students";
+
+if (!empty($search)) {
+    $sql .= " WHERE first_name LIKE ? OR last_name LIKE ?";
+}
+
+$sql .= " ORDER BY last_name ASC, first_name ASC";
+
+$stmt = $conn->prepare($sql);
+
+if (!empty($search)) {
+    $searchTerm = "%" . $search . "%";
+    $stmt->bind_param("ss", $searchTerm, $searchTerm);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+$students = [];
+if ($result && $result->num_rows > 0) {
+    $students = $result->fetch_all(MYSQLI_ASSOC);
+}
+$stmt->close();
+$conn->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +45,6 @@
     <title>Student Records - MHR System</title>
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="student_records.css">
-    <!-- Simple font link if needed, assuming Inter from dashboard.css -->
 </head>
 <body>
     
@@ -28,25 +66,10 @@
                 
                 <!-- Search and Filter Controls -->
                 <div class="records-controls">
-                    <div class="search-box">
-                        <input type="text" placeholder="Search by Student ID or Name...">
-                    </div>
-                    <div class="filter-group">
-                        <select class="filter-select">
-                            <option value="">All Courses</option>
-                            <option value="BSCS">BS Computer Science</option>
-                            <option value="BSIT">BS Info Tech</option>
-                            <option value="BSN">BS Nursing</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <select class="filter-select">
-                            <option value="">All Statuses</option>
-                            <option value="Healthy">Healthy</option>
-                            <option value="Monitor">Under Monitoring</option>
-                            <option value="Critical">Critical</option>
-                        </select>
-                    </div>
+                    <form class="search-box" method="GET">
+                        <!-- Auto-submit or Enter key works naturally with forms -->
+                        <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search by Name...">
+                    </form>
                 </div>
 
                 <!-- Records Table -->
@@ -55,36 +78,41 @@
                         <table class="students-table">
                             <thead>
                                 <tr>
-                                    <th>Student ID</th>
-                                    <th>Student Name</th>
-                                    <th>Course & Year</th>
+                                    <th>First name</th>
+                                    <th>Last name</th>
                                     <th>Age</th>
-                                    <th>Last Checkup</th>
-                                    <th>Health Status</th>
-                                    <th>Action</th>
+                                    <th>Email</th>
+                                    <th>Contact</th>
+                                    <th>Course</th>
+                                    <th>College</th>
+                                    <th>Blood type</th>
+                                    <th>Sex</th>
+                                    <th>Religion</th>
+                                    <th>Civil Status</th>
+                                    <th>Allergies</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Sample Static Data -->
-                                <tr>
-                                    <td>2024-00156</td>
-                                    <td>Maria Clara</td>
-                                    <td>BSCS - 3</td>
-                                    <td>21</td>
-                                    <td>Oct 12, 2025</td>
-                                    <td><span class="badge healthy">Healthy</span></td>
-                                    <td><a href="#" class="btn-view-record">View Details</a></td>
-                                </tr>
-                                <tr>
-                                    <td>2024-00892</td>
-                                    <td>Juan Dela Cruz</td>
-                                    <td>BSIT - 2</td>
-                                    <td>20</td>
-                                    <td>Nov 05, 2025</td>
-                                    <td><span class="badge monitor">Under Monitoring</span></td>
-                                    <td><a href="#" class="btn-view-record">View Details</a></td>
-                                </tr>
-                                <!-- End Sample Data -->
+                                <?php if (!empty($students)): ?>
+                                    <?php foreach ($students as $student): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($student['first_name']) ?></td>
+                                            <td><?= htmlspecialchars($student['last_name']) ?></td>
+                                            <td><?= htmlspecialchars($student['age']) ?></td>
+                                            <td><?= htmlspecialchars($student['email']) ?></td>
+                                            <td><?= htmlspecialchars($student['contact']) ?></td>
+                                            <td><?= htmlspecialchars($student['course']) ?></td>
+                                            <td><?= htmlspecialchars($student['college']) ?></td>
+                                            <td><?= htmlspecialchars($student['blood_type'] ?? 'N/A') ?></td>
+                                            <td><?= htmlspecialchars($student['sex']) ?></td>
+                                            <td><?= htmlspecialchars($student['religion'] ?? 'N/A') ?></td>
+                                            <td><?= htmlspecialchars($student['civil_status']) ?></td>
+                                            <td><?= htmlspecialchars($student['allergies'] ?? 'N/A') ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <tr><td colspan="12" style="text-align: center;">No student records found.</td></tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>

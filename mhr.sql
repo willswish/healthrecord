@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 18, 2026 at 09:01 AM
+-- Generation Time: Mar 19, 2026 at 09:02 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,11 +24,56 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `current_medication`
+--
+
+CREATE TABLE `current_medication` (
+  `id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `current_medication` enum('Yes','No') DEFAULT 'No',
+  `medication_specify` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `current_medication`
+--
+
+INSERT INTO `current_medication` (`id`, `student_id`, `current_medication`, `medication_specify`) VALUES
+(1, 123, 'Yes', 'asd'),
+(2, 234, 'No', 'ds');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `medical_records`
+--
+
+CREATE TABLE `medical_records` (
+  `id` int(11) NOT NULL,
+  `student_id` varchar(255) NOT NULL,
+  `date` date NOT NULL,
+  `diagnosis` varchar(255) NOT NULL,
+  `treatment` text NOT NULL,
+  `severity` enum('mild','moderate','severe') NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `medical_records`
+--
+
+INSERT INTO `medical_records` (`id`, `student_id`, `date`, `diagnosis`, `treatment`, `severity`, `created_at`) VALUES
+(1, '124', '2026-03-19', 'cold', 'fluids', 'mild', '2026-03-19 07:20:59');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `students`
 --
 
 CREATE TABLE `students` (
   `id` int(11) NOT NULL,
+  `student_id` varchar(50) NOT NULL,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `age` int(11) DEFAULT NULL,
@@ -43,6 +88,13 @@ CREATE TABLE `students` (
   `allergies` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `students`
+--
+
+INSERT INTO `students` (`id`, `student_id`, `first_name`, `last_name`, `age`, `email`, `contact`, `course`, `college`, `blood_type`, `sex`, `religion`, `civil_status`, `allergies`, `created_at`) VALUES
+(1, '123', 'Will ', 'Bar', 2, 'wchris@gmail.com', '0991', 'bsit', 'adu', 'O+', 'Male', 'catholic', 'Single', 'none', '2026-03-18 08:04:18');
 
 -- --------------------------------------------------------
 
@@ -69,15 +121,54 @@ INSERT INTO `users` (`id`, `username`, `password`, `role`, `created_at`) VALUES
 (4, 'nurse', '$2y$10$CGF6eM5f6aCmrGXnR5yM/.uYcCQVmeI4ofF18NLiafgoLoxOHwTfq', 'nurse', '2026-03-18 07:21:12'),
 (5, 'clerk', '$2y$10$q5oHVckV7XUiKu..RVypgeb/ki.M.dYYJuQlN4F6bhPxkH2V4Eswy', 'clerk', '2026-03-18 07:21:33');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vitals`
+--
+
+CREATE TABLE `vitals` (
+  `id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `date` date NOT NULL,
+  `time` time NOT NULL,
+  `temperature` decimal(4,1) DEFAULT NULL,
+  `pulse_rate` int(11) DEFAULT NULL,
+  `blood_pressure` varchar(10) DEFAULT NULL,
+  `oxygen_level` int(11) DEFAULT NULL,
+  `weight` decimal(5,2) DEFAULT NULL,
+  `height` decimal(5,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `vitals`
+--
+
+INSERT INTO `vitals` (`id`, `student_id`, `date`, `time`, `temperature`, `pulse_rate`, `blood_pressure`, `oxygen_level`, `weight`, `height`) VALUES
+(2, 123, '2026-03-19', '07:27:00', 98.0, 72, '120/90', 98, 67.00, 170.00);
+
 --
 -- Indexes for dumped tables
 --
 
 --
+-- Indexes for table `current_medication`
+--
+ALTER TABLE `current_medication`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `medical_records`
+--
+ALTER TABLE `medical_records`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `students`
 --
 ALTER TABLE `students`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `student_id` (`student_id`);
 
 --
 -- Indexes for table `users`
@@ -87,20 +178,44 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `username` (`username`);
 
 --
+-- Indexes for table `vitals`
+--
+ALTER TABLE `vitals`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `current_medication`
+--
+ALTER TABLE `current_medication`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `medical_records`
+--
+ALTER TABLE `medical_records`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `vitals`
+--
+ALTER TABLE `vitals`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
