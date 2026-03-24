@@ -1,3 +1,28 @@
+<?php
+$servername = "localhost";
+$db_username = "root";
+$db_password = "";
+$dbname = "mhr";
+
+// Create connection
+$conn = new mysqli($servername, $db_username, $db_password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch records
+$records = [];
+$search = $_GET['search'] ?? '';
+$sql = "SELECT * FROM medical_info WHERE student_id LIKE ? ORDER BY date_recorded DESC";
+$stmt = $conn->prepare($sql);
+$searchTerm = "%$search%";
+$stmt->bind_param("s", $searchTerm);
+$stmt->execute();
+$records = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,9 +54,9 @@
             <!-- Main Content -->
             <div class="records-container">
                 <div class="records-controls">
-                    <div class="search-box">
-                        <input type="text" placeholder="Search student name or ID...">
-                    </div>
+                    <form class="search-box" method="GET">
+                        <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search student ID...">
+                    </form>
                     <!-- specific controls for medical info can go here -->
                 </div>
 
@@ -40,18 +65,38 @@
                         <thead>
                             <tr>
                                 <th>Student ID</th>
-                                <th>Full Name</th>
-                                <th>Blood Type</th>
-                                <th>Allergies</th>
-                                <th>Chronic Conditions</th>
-                                <th>Actions</th>
+                                <th>Fever</th>
+                                <th>Cough</th>
+                                <th>Sore Throat</th>
+                                <th>Runny Nose</th>
+                                <th>Fatigue</th>
+                                <th>Headache</th>
+                                <th>Difficulty Breathing</th>
+                                <th>Diarrhea</th>
+                                <th>Date Recorded</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- PHP Code to fetch and display medical info will go here -->
-                            <tr>
-                                <td colspan="6" style="text-align:center; padding: 20px; color: #777;">No medical information found.</td>
-                            </tr>
+                            <?php if (!empty($records)): ?>
+                                <?php foreach ($records as $row): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($row['student_id']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['fever']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['cough']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['sore_throat']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['runny_nose']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['fatigue']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['headache']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['difficulty_breathing']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['diarrhea']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['date_recorded']); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="10" style="text-align:center; padding: 20px; color: #777;">No medical information found.</td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>

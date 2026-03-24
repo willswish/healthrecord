@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 23, 2026 at 09:48 AM
+-- Generation Time: Mar 24, 2026 at 09:20 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -45,6 +45,33 @@ INSERT INTO `current_medication` (`id`, `student_id`, `current_medication`, `med
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `medical_info`
+--
+
+CREATE TABLE `medical_info` (
+  `id` int(11) NOT NULL,
+  `student_id` varchar(50) NOT NULL,
+  `fever` enum('Yes','No') DEFAULT 'No',
+  `cough` enum('Yes','No') DEFAULT 'No',
+  `sore_throat` enum('Yes','No') DEFAULT 'No',
+  `runny_nose` enum('Yes','No') DEFAULT 'No',
+  `fatigue` enum('Yes','No') DEFAULT 'No',
+  `headache` enum('Yes','No') DEFAULT 'No',
+  `difficulty_breathing` enum('Yes','No') DEFAULT 'No',
+  `diarrhea` enum('Yes','No') DEFAULT 'No',
+  `date_recorded` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `medical_info`
+--
+
+INSERT INTO `medical_info` (`id`, `student_id`, `fever`, `cough`, `sore_throat`, `runny_nose`, `fatigue`, `headache`, `difficulty_breathing`, `diarrhea`, `date_recorded`) VALUES
+(0, '123', 'Yes', 'No', 'Yes', 'Yes', 'No', 'Yes', 'No', 'No', '2026-03-24 07:57:11');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `medical_records`
 --
 
@@ -65,6 +92,32 @@ CREATE TABLE `medical_records` (
 INSERT INTO `medical_records` (`id`, `student_id`, `date`, `diagnosis`, `treatment`, `severity`, `created_at`) VALUES
 (1, '124', '2026-03-19', 'cold', 'fluids', 'mild', '2026-03-19 07:20:59'),
 (2, '321', '2026-03-23', 'Hot', 'Tempra', 'severe', '2026-03-23 07:41:05');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `personal_info`
+--
+
+CREATE TABLE `personal_info` (
+  `id` int(11) NOT NULL,
+  `student_id` varchar(50) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `contact` varchar(20) DEFAULT NULL,
+  `address` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `personal_info`
+--
+
+INSERT INTO `personal_info` (`id`, `student_id`, `first_name`, `last_name`, `email`, `contact`, `address`, `created_at`, `updated_at`) VALUES
+(1, 'clerk', 'clerk', 'clerk', 'clerk@gmail.com', '09123456789', 'dawdqw', '2026-03-24 05:51:46', '2026-03-24 05:51:46'),
+(2, '21313', 'clerk', 'clerk', 'clerk@gmail.com', '09123456789', 'dawdqw', '2026-03-24 06:10:13', '2026-03-24 06:10:13');
 
 -- --------------------------------------------------------
 
@@ -98,6 +151,22 @@ INSERT INTO `roles` (`id`, `slug`, `name`) VALUES
 CREATE TABLE `role_permissions` (
   `role_id` int(11) NOT NULL,
   `permission` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `screening`
+--
+
+CREATE TABLE `screening` (
+  `id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `vision_right_eye` enum('Pass','Fail') DEFAULT NULL,
+  `vision_left_eye` enum('Pass','Fail') DEFAULT NULL,
+  `hearing_left_ear` enum('Pass','Fail') DEFAULT NULL,
+  `hearing_right_ear` enum('Pass','Fail') DEFAULT NULL,
+  `screening_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -159,6 +228,23 @@ INSERT INTO `users` (`id`, `username`, `password`, `role`, `created_at`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `vaccinations`
+--
+
+CREATE TABLE `vaccinations` (
+  `id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `vaccine_name` varchar(100) DEFAULT NULL,
+  `dose` varchar(50) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `provider` varchar(100) DEFAULT NULL,
+  `batch_no` varchar(50) DEFAULT NULL,
+  `remarks` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `vitals`
 --
 
@@ -199,6 +285,12 @@ ALTER TABLE `medical_records`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `personal_info`
+--
+ALTER TABLE `personal_info`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `roles`
 --
 ALTER TABLE `roles`
@@ -210,6 +302,12 @@ ALTER TABLE `roles`
 --
 ALTER TABLE `role_permissions`
   ADD PRIMARY KEY (`role_id`,`permission`);
+
+--
+-- Indexes for table `screening`
+--
+ALTER TABLE `screening`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `students`
@@ -224,6 +322,12 @@ ALTER TABLE `students`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Indexes for table `vaccinations`
+--
+ALTER TABLE `vaccinations`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `vitals`
@@ -248,10 +352,22 @@ ALTER TABLE `medical_records`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT for table `personal_info`
+--
+ALTER TABLE `personal_info`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `screening`
+--
+ALTER TABLE `screening`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `students`
@@ -264,6 +380,12 @@ ALTER TABLE `students`
 --
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `vaccinations`
+--
+ALTER TABLE `vaccinations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `vitals`
